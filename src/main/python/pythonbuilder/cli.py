@@ -76,6 +76,7 @@ def parse_options(args):
         default=False,
         help="List tasks")
 
+
     project_group = optparse.OptionGroup(parser, "Project Options",
         "Customizes the project to build.")
 
@@ -96,6 +97,12 @@ def parse_options(args):
         default=[],
         metavar="<property>=<value>",
         help="Set/ override a property value")
+
+    project_group.add_option("-f", "--file",
+        dest="project_descriptor",
+        metavar="<build file name>",
+        default="build.py",
+        help="Overrides build.py file name")
 
     parser.add_option_group(project_group)
 
@@ -219,7 +226,9 @@ def main(*args):
 
     if options.list_tasks:
         reactor.prepare_build(property_overrides=options.property_overrides,
-            project_directory=options.project_directory)
+            project_directory=options.project_directory,
+            project_descriptor=options.project_descriptor,
+        )
 
         sys.stdout.write("Tasks found in %s building in %s:\n\n" % (reactor.project.name, reactor.project.basedir))
         for task in sorted(reactor.get_tasks()):
@@ -246,7 +255,9 @@ def main(*args):
     try:
         try:
             reactor.prepare_build(property_overrides=options.property_overrides,
-                project_directory=options.project_directory)
+                project_directory=options.project_directory,
+                project_descriptor=options.project_descriptor,
+            )
 
             if options.list_tasks:
                 for task in sorted(reactor.get_tasks()):
